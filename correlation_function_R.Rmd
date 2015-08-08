@@ -1,0 +1,37 @@
+---
+title: "correlation_funtion"
+author: "Rakesh"
+date: "August 7, 2015"
+output: html_document
+---
+```{r}
+cor(age,friend_count)
+#this will give you correlation between age and friend count. If the coefficient is negative then we can #easily see that that friend count will take more time
+#The default method for computing the correlation coefficient is Pearson, and this is true for most statistical software. You do not need to pass the method parameter when calculating the Pearson Product Moment Correlation. 
+```
+
+```{r}
+cor.test(age, friend_count)
+#if you can also use the cor_test function find correlation into account
+```
+
+
+```{r}
+#if you can also the with function here 
+#with(facebookData, cor.test(age, friend_count, method = c("pearson")))
+#based on correlation coefficient we can say that the relation between them is not linear.
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

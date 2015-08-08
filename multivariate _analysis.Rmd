@@ -1,0 +1,19 @@
+---
+title: "Multivariate Analysis"
+author: "Rakesh"
+date: "August 7, 2015"
+output: html_document
+---
+
+#In this lesson we will learn how to analyze more than 2 variables from our data set
+
+```{r}
+ggplot(aes(x = gender, y = age), data = subset(facebookData, !is.na(gender))) + 
+  geom_line() + 
+  stat_summary(fun.y = mean, geom = 'point', shape = 4)
+
+ggplot(aes(x = age, y = friend_count), data = subset(facebookData, !is.na(gender))) + 
+   geom_line(aes(color= gender), stat = 'summary', fun.y = median)
+#if you want to plot using colors then this is an nice example
+```
+  

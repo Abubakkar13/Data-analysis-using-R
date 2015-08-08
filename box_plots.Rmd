@@ -1,0 +1,94 @@
+---
+title: "boxplot"
+author: "Rakesh"
+date: "August 2, 2015"
+output: html_document
+---
+
+how to use boxplot here in R 
+#http://flowingdata.com/2008/02/15/how-to-read-and-use-a-box-and-whisker-plot/
+
+```{r}
+qplot(x= gender, y= friend_count, data = subset(facebook, !is.na(gender)), geom = 'boxplot') + 
+  scale_y_continuous(limits = c(0, 1000))
+```
+The interquartile range or IQR includes all of the values between the bottom and top of the boxes in the boxplot. 
+Visualization of the IQR with a normal probability distribution function with $\mu=1$ and $\sigma^2=1$ (pdf). scale_y_continuous can  be used but a better way is you use Did you use the ylim parameter? A better way to do this without affecting the box plot visualization is to use the coord_cartesian() layer.
+
+the same thing can be done using coord_cartesian(ylim = c(0, 100))
+```{r}
+qplot(x= gender, y= friend_count, data = subset(facebook, !is.na(gender)), geom = 'boxplot') + 
+  coord_cartesian(ylim= c(0, 100))
+
+by(facebook$friend_count, facebook$gender, summary)
+```
+
+how to use the boxplot here <http://flowingdata.com/2008/02/15/how-to-read-and-use-a-box-and-whisker-plot/>
+
+The black line inside the box represents the median. 
+
+who initiated more friend request 
+
+```{r}
+qplot(x= gender, y= friendships_initiated, data = subset(facebook, !is.na(gender)), geom = 'boxplot') + 
+  coord_cartesian(ylim= c(0, 70))
+```
+If you see the median 
+
+how to check whether someone has ever used his mobile phone or not to use facebook?
+
+
+```{r}
+#summary(facebook$mobile_likes)
+summary(facebook$mobile_likes > 0)
+```
+this will generate logical true, false operation since the number of mobile_likes is always greater than 0
+
+
+what percentage of check in using mobile phones ?
+
+```{r}
+percentMobile <- 63947/length(facebook$mobile_likes)
+```
+
+length function will give you all the values in your variable.
+
+it makes sense to improve the mobile development experience since there is more than 65% likes coming frm mobile. This is what data analysis can do to you.
+
+it is extremely important to understand the each value here and its significance. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

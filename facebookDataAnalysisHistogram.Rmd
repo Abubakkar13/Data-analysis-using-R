@@ -1,0 +1,172 @@
+Title
+========================================================
+
+Always use the RMD file to load the data and take all your notes.
+
+```{r}
+facebook <- read.delim('pseudo_facebook.tsv')
+```
+
+Playing around with facebook's birthday
+```{r}
+library(ggplot2)
+qplot(x= dob_day, data = facebook, bandwidth = 40)+
+  scale_x_discrete(breaks=1:31)+
+  facet_wrap(~dob_month, ncol = 3)
+  facet_grid(~horizontal)
+```
+***Facet_wrap(formula), it actually takes formula inside its parenthesis. Don't forget the tilde in facet**
+Remember how we used to use the facet using open refine. Its the same thing here in R programming as well.
+
+documentation is here <http://www.cookbook-r.com/Graphs/Facets_(ggplot2)/>
+default setting in facebook is January 1st
+
+```{r}
+library(ggplot2)  
+qplot(x= friend_count, data = facebook, xlim = c(0, 1000))
+```
+the xlim makes sure that i am only seeing the values in x axis from 0- 1000
+
+```{r}
+library(ggplot2)
+ggplot(aes(x = friend_count), data = facebook, xlim = c(1, 1000)) +
+    geom_histogram()
+```
+
+
+this histogram is telling us friend distribution about men and female
+```{r}
+qplot(x= friend_count, data = facebook, binwidth = 25) +
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50))+
+  facet_wrap(~gender, ncol = 2)
+```
+
+Missing values are presented by NA in R.
+
+```{r}
+qplot(x= friend_count, data = subset(facebook, !is.na(gender)), binwidth = 25) +
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50))+
+  facet_wrap(~gender, ncol = 2)
+```
+
+Creating subsets are extremely important. If you need to filter your data as much as possible.
+
+```{r}
+#table(facebook$gender)
+by(facebook$friend_count, facebook$gender, summary)
+```
+table command gives you the total number of males and females we have in the dataset
+The result of this ----> by(facebook$friend_count, facebook$gender, summary)
+facebook$gender: female
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0      37      96     242     244    4923 
+------------------------------------------------------------------------------------ 
+facebook$gender: male
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0      27      74     165     182    4917 
+
+median is always a best statistics because it is a more robust way to analyze data. Esp if the data is long tailed.
+
+```{r}
+  ggplot(aes(x = tenure), data = facebook) +
+  geom_histogram(binwidth = 30, color = 'black', fill = '#099DD9')
+```
+The parameter color determines the color outline of objects in a plot.
+The parameter fill determines the color of the area inside objects in a plot.
+
+```{r}
+qplot(x =  tenure, data = facebook, color = I('black'), fill = I('#099DD9'))
+```
+so the color black determines the outline whereas the parameter fill determines the color of the area inside
+
+```{r}
+qplot(x =  tenure/365, data = facebook, binwidth = 2.5, color = I('black'), fill = I('#099DD9'))
+```
+
+```{r}
+ggplot(aes(x = tenure / 365), data = pf) +
+  geom_histogram(color = 'black', fill = '#F79420') +
+  scale_x_continuous(breaks = seq(1, 7, 1), limits = c(0, 7)) +
+  xlab('Number of years using Facebook') +
+  ylab('Number of users in sample')
+```
+generating the lables are extremely important.
+
+```{r}
+qplot(x =  age, data = facebook, binwidth = 1, color = I('black'), fill = I('#099DD9'))
+```
+
+if you want to know the summary of any particular element then you need to use this. It will give you 
+median, max, min, mean and other details.
+```{r}
+summary(facebook$age)
+```
+Everytime you see the data is not properly distributed then you can use the log of the variable to see the summary 
+
+```{r}
+#summary(log10(facebook$age))
+summary(sqrt(facebook$friend_count))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+

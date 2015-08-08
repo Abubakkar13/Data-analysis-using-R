@@ -1,0 +1,30 @@
+---
+title: "ScatterPlotLikes"
+author: "Rakesh"
+date: "August 7, 2015"
+output: html_document
+---
+
+```{r}
+#this file will show the scatter plot of total likes received vs likes received
+plot(x = facebookData$likes_received, y= facebookData$www_likes_received)
+#rather then using this one , we can use ggplot 
+```
+
+
+```{r}
+ggplot(aes(y = likes_received, x = www_likes_received), data=facebookData) + 
+  geom_point() +
+  xlim(0, quantile(facebookData$www_likes_received, 0.95)) +
+  ylim(0, quantile(facebookData$likes_received, 0.95)) + 
+  geom_smooth(method = "lm", color = 'red')
+#if you are using ggplot then you need to include your data in aes wrapper
+#including geom_point tells the ggplot that we are looking for only scatter plot
+#you can use this geom_smooth method to 
+#what do you think is the correlation between the two values 
+
+#cor(facebookData$www_likes_received, facebookData$likes_received)
+#for finding top 5% data you can use quantitle 
+
+```
+

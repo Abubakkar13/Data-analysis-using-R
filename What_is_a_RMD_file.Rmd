@@ -1,0 +1,19 @@
+Title
+========================================================
+
+Always use the RMD file to load the data and take all your notes.
+
+```{r}
+facebook <- read.delim('pseudo_facebook.tsv')
+```
+
+Playing around with facebook's birthday
+```{r}
+library(ggplot2)
+qplot(x= dob_day, data = facebook, bandwidth = 40)+
+  scale_x_discrete(breaks=1:31)+
+  facet_wrap(~dob_month, ncol = 3)
+```
+Facet_wrap(formula), it actually takes formula inside its parenthesis. Don't forget the tilde in facet_wrap
+
+

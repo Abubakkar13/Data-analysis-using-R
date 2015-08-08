@@ -1,0 +1,35 @@
+---
+title: "decptive_correlation/discrete dividing"
+author: "Rakesh"
+date: "August 7, 2015"
+output: html_document
+---
+
+```{r}
+ggplot(aes(y= Mitchell$Temp, x=Mitchell$Month), data = Mitchell) + 
+  geom_point() + 
+  scale_x_discrete(breaks = seq(0, 203, 12))
+#if you want to divide your scatter plot into multiple steps then you could do that
+```
+
+```{r}
+#q plot is superintelligent when it comes to scatter plot
+#if you want to know the range of the limits then you can do 
+#range(Mitchell$month )
+cor.test(Mitchell$Temp, Mitchell$Month)
+```
+
+
+/*
+ou could also get perspective on this data by overlaying each year's data on top of each other, giving a clear, generally sinusoidal graph. You can do this by using the R's modulus operator %% in your code. Try running the code below!
+
+ggplot(aes(x=(Month%%12),y=Temp),data=Mitchell)+
+  geom_point()
+
+Data Visualization Pioneers
+John Tukey
+William Playfair
+William Playfair and the Psychology of Graphs
+
+There are other measures of associations that can detect this. The dcor.ttest() function in the energy package implements a non-parametric test of the independence of two variables. The test correctly rejects the independence.*/
+

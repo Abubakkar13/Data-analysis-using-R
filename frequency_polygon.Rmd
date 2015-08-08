@@ -1,0 +1,68 @@
+---
+title: "Frequency_polygon"
+author: "Rakesh"
+date: "August 2, 2015"
+output: html_document
+---
+
+```{r}
+  ggplot(aes(x = friend_count, y = ..count../sum(..count..)), data = subset(facebook, !is.na(gender))) +
+  geom_freqpoly(aes(color = gender), binwidth=10) +
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) +
+  xlab('Friend Count') +
+  ylab('Percentage of users with that friend count')
+```
+
+
+Equivalent query in ggplot2 syntax 
+
+```{r}
+ggplot(aes(x = www_likes), data = subset(facebook, !is.na(gender))) +
+  geom_freqpoly(aes(color = gender)) + 
+  #scale_x_log10()
+```
+try running this program with scale_x_log10() and without it. If two graphs are overlapping to each other then you could use this scale_x_log10().
+
+
+which gender group has more likes you need to find first
+```{r}
+by(facebook$www_likes, facebook$gender, sum)
+```
+
+We will use the by command 
+
+```{r}
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

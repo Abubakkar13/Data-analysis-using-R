@@ -1,0 +1,47 @@
+---
+title: "Mutiple Graphs"
+author: "Rakesh"
+date: "August 2, 2015"
+output: html_document
+---
+
+Creating multiple graphs in one plot using gridExtra 
+```{r}
+p1 = qplot(x = friend_count, data = facebook) 
+p2 = qplot(x= log10(friend_count), data= facebook)
+p3 = qplot(x= sqrt(friend_count), data= facebook)
+grid.arrange(p1, p2, p3, ncol=1)
+```
+log10 and sqrt transformation helps use to see the data properly
+
+
+if you want to use the ggplot to explore all the other functionalities
+```{r}
+library(gridExtra)
+p1 <- ggplot(aes(x= friend_count), data=facebook) + geom_histogram()
+p2 <- p1 + scale_x_log10()
+p3 <- p1 + scale_y_sqrt()
+grid.arrange(p1,p2,p3, ncol=1)
+```
+the syntax for ggplot is exactly similar but we have to define aes and also include geom_histogram (define what kind of histogram are you looking forward)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
