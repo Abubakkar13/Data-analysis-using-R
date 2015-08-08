@@ -1,0 +1,69 @@
+---
+title: "scatter_plot_yogurt"
+author: "Rakesh"
+date: "August 8, 2015"
+output: html_document
+---
+# Create a scatterplot of price vs time.
+
+# This will be an example of a time series plot.
+
+# Resolve overplotting issues by using
+# techniques you learned in Lesson 4.
+
+# What are some things that you notice?
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ================================================
+
+```{r}
+library(ggplot2)
+qplot(x=time, y=price, data=yo)
+#scatter plot using qplot but you can also use ggplot
+```
+
+```{r}
+ggplot(aes(x= time, y= price), data = yo) + 
+  geom_jitter(alpha = 1/4, shape = 21, fill = I('#F79420'))
+#geom_jitter is basically used to transparent the little lines here
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

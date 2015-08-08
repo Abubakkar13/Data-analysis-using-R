@@ -1,36 +1,18 @@
-# Write code to do the following:
+# Create a line graph of mean of friendships_initiated per day (of tenure)
+# vs. tenure colored by year_joined.bucket.
 
-# (1) Add another geom_line to code below
-# to plot the grand mean of the friend count vs age.
+# You need to make use of the variables tenure,
+# friendships_initiated, and year_joined.bucket.
 
-# (2) Exclude any users whose year_joined.bucket is NA.
-
-# (3) Use a different line type for the grand mean.
-
-# As a reminder, the parameter linetype can take the values 0-6:
-
-# 0 = blank, 1 = solid, 2 = dashed
-# 3 = dotted, 4 = dotdash, 5 = longdash
-# 6 = twodash
+# You also need to subset the data to only consider user with at least
+# one day of tenure.
 
 # This assignment is not graded and
 # will be marked as correct when you submit.
 
-# The code from the last programming exercise should
-# be your starter code!
-
 # ENTER YOUR CODE BELOW THIS LINE
-# ==================================================================
-#Selection 405
-
-
-
-
-
-
-
-
-
-
-
-
+# ========================================================================
+ggplot(aes(x = tenure, y = friendships_initiated), 
+       data = facebookData) +
+  geom_line(aes(color = year_joined.bucket))
+  

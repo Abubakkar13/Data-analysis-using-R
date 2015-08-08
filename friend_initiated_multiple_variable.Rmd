@@ -1,0 +1,13 @@
+---
+title: "friend_initiated_multiple_variable"
+author: "Rakesh"
+date: "August 8, 2015"
+output: html_document
+---
+
+```{r}
+ggplot(aes(x = tenure, y = friendships_initiated), 
+       data = facebookData) +
+  geom_line()
+```
+

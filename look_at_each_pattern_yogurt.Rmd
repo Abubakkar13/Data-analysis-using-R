@@ -1,0 +1,46 @@
+---
+title: "look_at_each_pattern_yogurt"
+author: "Rakesh"
+date: "August 8, 2015"
+output: html_document
+---
+
+```{r}
+set.seed(4230) #so that same set of id can be reproduciable
+sample.ids <- sample(levels(yo$id), 16)
+
+ggplot(aes(x=time, y=price), 
+       data = subset(yo, id %in% sample.ids)) +
+       facet_wrap(~id) +
+      geom_line()
+
+# what is the purpose of using set.seed()?
+# The need is the possible desire for reproducible results, which may for example come from trying to debug your program, or of course from trying to redo what it does:
+# These two results we will "never" reproduce as I just asked for something "random":
+# R> sample(LETTERS, 5)
+# [1] "K" "N" "R" "Z" "G"
+# R> sample(LETTERS, 5)
+# [1] "L" "P" "J" "E" "D"
+# These two, however, are identical because I set the seed:
+# R> set.seed(42); sample(LETTERS, 5)
+# [1] "X" "Z" "G" "T" "O"
+# R> set.seed(42); sample(LETTERS, 5)
+# [1] "X" "Z" "G" "T" "O"
+# R> 
+# 
+# 
+# Note: x %in% y returns a logical (boolean) vector the same length as x that says whether each entry in x appears in y. That is, for each entry in x, it checks to see whether it is in y.
+# 
+# This allows us to subset the data so we get all the purchases occasions for the households in the sample. Then, we create scatterplots of price vs. time and facet by the sample id.
+# 
+# Use the pch or shape parameter to specify the symbol when plotting points. Scroll down to 'Plotting Points' on QuickR's Graphical Parameters.
+
+
+
+
+
+
+
+
+```
+

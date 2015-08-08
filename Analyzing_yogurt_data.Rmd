@@ -1,0 +1,16 @@
+---
+title: "Analyzing_yogurt_data"
+author: "Rakesh"
+date: "August 8, 2015"
+output: html_document
+---
+```{r}
+#converting the id variable to a factor variable
+yo$id <- factor(yo$id) #now it is the factor variable 
+```
+
+```{r}
+library(ggplot2)
+qplot(x = price, data=yo, binwidth = 10)
+#binwidth is exactly like bandwidth try changing it to see the values
+```

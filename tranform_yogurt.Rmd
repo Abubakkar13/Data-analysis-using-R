@@ -1,0 +1,60 @@
+---
+title: "transform_yogurt"
+author: "Rakesh"
+date: "August 8, 2015"
+output: html_document
+---
+# Create a new variable called all.purchases,
+# which gives the total counts of yogurt for
+# each observation or household.
+
+# One way to do this is using the transform
+# function. You can look up the function transform
+# and run the examples of code at the bottom of the
+# documentation to figure out what it does.
+
+# The transform function produces a data frame
+# so if you use it then save the result to 'yo'!
+
+# OR you can figure out another way to create the
+# variable.
+
+# DO NOT ALTER THE CODE BELOW THIS LINE
+# ========================================================
+# ENTER YOUR CODE BELOW THIS LINE
+# ========================================================
+
+
+```{r}
+#tranform can be used to combine the variables and create new variables based on prievous columns
+yo <- transform(yo, all.purchases = yo$strawberry + yo$blueberry + yo$pina.colada + yo$plain + yo$mixed.berry)
+# This is another way to accomplish what we did above. Here's the basic transform() syntax:
+# dataFrame <- transform(dataFrame, newColumnName = some equation)
+# So, to get the sum of two columns and store that into a new column with transform(), you would use code such as:
+# dataFrame <- transform(dataFrame, newColumn = oldColumn1 + oldColumn2)
+# To add a profit margin column to our data frame with transform() we'd use:
+#   companiesData <- transform(companiesData, margin = (profit/revenue) * 100)
+# We can then use the round() function to round the column results to one decimal place. Or, in one step, we can create a new column that's already rounded to one decimal place:
+# companiesData <- transform(companiesData, margin = round((profit/revenue) * 100, 1))
+# One brief aside about round(): You can use negative numbers for the second, "number of decimal places" argument. While round(73842.421, 1) will round to one decimal, in this case 73842.42, round(73842.421, -3) will round to the nearest thousand, in this case 74000
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
