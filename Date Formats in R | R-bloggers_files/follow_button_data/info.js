@@ -1,0 +1,1 @@
+/**/__twttr.setFollowersCountAndFollowing([{"following":false,"id":"144592995","screen_name":"Rbloggers","name":"R-bloggers","protected":false,"followers_count":21583,"formatted_followers_count":"21.6K followers","age_gated":false}]);

@@ -1,0 +1,794 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Date Formats in R | R-bloggers</title>
+
+<link rel="stylesheet" href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/style.css" type="text/css" media="screen">
+
+<style type="text/css">
+
+body { width: 1024px; }
+
+#mainwrapper { width: 1004px; }
+
+#sidebar { width: 180px; }
+
+#sidebar .side-widget { width: 160px; }
+
+
+#secondsidebar { width: 300px; }
+
+#secondsidebar .side-widget { width: 300px; }
+
+
+#leftcontent, #twocol, #threecol, #threecol2, .commentlist { width: 456px; }
+
+#leftcontent img, .wp-caption { max-width: 456px; }
+
+#leftcontent .wp-caption img, #leftcontent .gallery-thumb img { max-width: 444px; }
+
+<!-- fix for IE & Safari -->
+
+.threepost embed { width: 132.24px !important; }
+
+.twopost embed { width: 209.76px !important; }
+
+<!-- end fix for Safari -->
+
+</style>
+
+	<link rel="pingback" href="http://www.r-bloggers.com/xmlrpc.php">
+<!--[if IE]>
+<link rel="stylesheet" type="text/css" href="http://www.r-bloggers.com/wp-content/themes/magazine-basic/iestyles.css" />
+<![endif]-->
+
+<!-- All in One SEO Pack 2.2.6.2 by Michael Torbert of Semper Fi Web Design[290,329] -->
+<meta name="description" itemprop="description" content="Importing DatesDates can be imported from character, numeric, POSIXlt, and POSIXct formats using the as.Date&nbsp;function from the base&nbsp;package.If your">
+
+<link rel="canonical" href="http://www.r-bloggers.com/date-formats-in-r/">
+<!-- /all in one seo pack -->
+<link rel="alternate" type="application/rss+xml" title="R-bloggers » Feed" href="http://www.r-bloggers.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="R-bloggers » Comments Feed" href="http://www.r-bloggers.com/comments/feed/">
+		<script async="" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/cbgapi.loaded_0"></script><script src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/ga.js" async="" type="text/javascript"></script><script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/www.r-bloggers.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.4"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/wp-emoji-release.js"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="wpt-twitter-feed-css" href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/twitter-feed.css" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack-top-posts-widget-css" href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/style_002.css" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/jetpack.css" type="text/css" media="all">
+<link rel="stylesheet" id="codebox-css" href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/codebox.css" type="text/css" media="screen">
+<!-- This site uses the Google Analytics by Yoast plugin v5.4.2 - Universal disabled - https://yoast.com/wordpress/plugins/google-analytics/ -->
+<script type="text/javascript">
+
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-419807-53']);
+	_gaq.push(['_gat._forceSSL']);
+	_gaq.push(['_trackPageview']);
+
+	(function () {
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(ga, s);
+	})();
+
+</script>
+<!-- / Google Analytics by Yoast -->
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/jquery.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/jquery-migrate.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/related-posts.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/codebox.js"></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.r-bloggers.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.r-bloggers.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Zurich, July 2013 – Stability Analytics" href="http://www.r-bloggers.com/zurich-july-2013-stability-analytics/">
+<link rel="next" title="‘Tis the Season for September Bearishness?" href="http://www.r-bloggers.com/tis-the-season-for-september-bearishness/">
+<meta name="generator" content="WordPress 4.2.4">
+<link rel="shortlink" href="http://wp.me/pMm6L-jea">
+<!-- This site is powered by Tweet, Like, Plusone and Share Plugin - http://techxt.com/tweet-like-google-1-and-share-plugin-wordpress/ -->
+		<meta property="og:type" content="article">
+		<meta property="og:title" content="Date Formats in R">
+		<meta property="og:url" content="http://www.r-bloggers.com/date-formats-in-r/">
+		<meta property="og:site_name" content="R-bloggers">
+		<meta property="og:description" content="Importing DatesDates can be imported from character, numeric, POSIXlt, and POSIXct formats using the as.Date&nbsp;function from the base&nbsp;package.If your data were exported from Excel, they will possibly be in numeric format. Otherwise, they will m...">
+		<!--[if lt IE 9]>
+	  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+			<style type="text/css">div.socialicons{float:left;display:block;margin-right: 10px;line-height: 1;}div.socialiconsv{line-height: 1;}div.socialicons p{margin-bottom: 0px !important;margin-top: 0px !important;padding-bottom: 0px !important;padding-top: 0px !important;}div.social4iv{background: none repeat scroll 0 0 #FFFFFF;border: 1px solid #aaa;border-radius: 3px 3px 3px 3px;box-shadow: 3px 3px 3px #DDDDDD;padding: 3px;position: fixed;text-align: center;top: 55px;width: 68px;display:none;}div.socialiconsv{padding-bottom: 5px;}</style>
+
+<link rel="dns-prefetch" href="http://i0.wp.com/">
+<link rel="dns-prefetch" href="http://i1.wp.com/">
+<link rel="dns-prefetch" href="http://i2.wp.com/">
+<style type="text/css">img#wpstats{display:none}</style><link href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shCore.css" type="text/css" rel="stylesheet"><link href="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shThemeDefault.css" type="text/css" rel="stylesheet"><style type="text/css" id="syntaxhighlighteranchor"></style>
+<script src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/secureAnonymousFramework"></script><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif);cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_close_icon:active{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_loader{background-color:#f6f7f8;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #3a5795;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{max-height:590px;min-height:590px;max-width:500px;min-width:500px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;left:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #2f477a;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f6f7f8;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}</style></head>
+
+<body class="single single-post postid-73914 single-format-standard">
+<!-- begin header -->
+<div id="header">
+		    	    	<a href="http://www.r-bloggers.com/" class="headerimage"><img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/R_02.png" alt="R-bloggers" class="aligncenter"></a>
+        <div id="description" class="aligncenter">
+        R news and tutorials contributed by (573) R bloggers    </div>     
+    <div class="main-navigation"><ul id="menu-top-nav" class="sf-menu sf-js-enabled sf-shadow"><li id="menu-item-48314" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-48314"><a href="http://www.r-bloggers.com/">Home</a></li>
+<li id="menu-item-92333" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92333"><a href="http://www.r-bloggers.com/about/">About</a></li>
+<li id="menu-item-50111" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-50111"><a href="http://feeds.feedburner.com/RBloggers" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://feeds.feedburner.com/RBloggers', 'RSS']);">RSS</a></li>
+<li id="menu-item-48313" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-48313"><a href="http://www.r-bloggers.com/add-your-blog/">add your blog!</a></li>
+<li id="menu-item-75513" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-75513"><a class="sf-with-ul" href="http://www.r-users.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.r-users.com/', 'R jobs']);">R jobs<span class="sf-sub-indicator">�</span><span class="sf-sub-indicator">�</span><span class="sf-sub-indicator">�</span></a>
+<ul style="float: none; width: 12em; display: none; visibility: hidden;" class="sub-menu">
+	<li style="white-space: normal; float: left; width: 100%;" id="menu-item-76945" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-76945"><a style="float: none; width: auto;" href="http://www.r-users.com/submit-job/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.r-users.com/submit-job/', 'Submit a new job (it’s free)']);">Submit a new job (it’s free)</a></li>
+	<li style="white-space: normal; float: left; width: 100%;" id="menu-item-76946" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-76946"><a style="float: none; width: auto;" href="http://www.r-users.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.r-users.com/', 'Browse latest jobs (also free)']);">Browse latest jobs (also free)</a></li>
+</ul>
+</li>
+<li id="menu-item-48311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-48311"><a href="http://www.r-bloggers.com/contact-us/">Contact us</a></li>
+</ul></div>
+</div>
+<!-- end header -->
+
+
+<div id="mainwrapper">
+<!-- begin sidebar -->
+    <div id="sidebar">
+		<div class="side-widget"><h2>Welcome!</h2>			<div class="textwidget"><iframe allowtransparency="true" scrolling="no" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/follow_button.html" style="width:164px; height:30px;" frameborder="0"></iframe>
+
+
+Here you will find daily <strong>news and tutorials about R</strong>, contributed by over 573 bloggers. 
+<br>
+There are many ways to <strong>follow us - </strong>
+<br>
+<a href="http://feedburner.google.com/fb/a/mailverify?uri=RBloggers" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://feedburner.google.com/fb/a/mailverify?uri=RBloggers', 'By e-mail:']);">By e-mail:</a>
+
+<form style="border:1px solid #ccc;padding:3px;text-align:center;" action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=RBloggers', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+<input style="width:110px" onclick="if (this.value == 'Your e-mail here') this.value = '';" value="Your e-mail here" name="email" type="text">
+<input value="RBloggers" name="uri" type="hidden"><input name="loc" value="en_US" type="hidden"><input value="Subscribe" type="submit">
+<a href="http://feeds.feedburner.com/RBloggers" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://feeds.feedburner.com/RBloggers', '']);"><img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/RBloggers.gif" style="border:0" alt="" height="26" width="88"></a>
+</form>
+
+
+
+<a href="https://www.facebook.com/rbloggers" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'https://www.facebook.com/rbloggers', 'On Facebook:']);">On Facebook:</a>
+<iframe src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/likebox.html" scrolling="no" style="border:none; overflow:hidden; width:160px; height:238px;" allowtransparency="true" frameborder="0"></iframe>
+
+
+<br>
+<strong>If you are an R blogger yourself</strong> you are invited to <a href="http://www.r-bloggers.com/add-your-blog/">add your own R content feed to this site</a> (<strong>Non-English</strong> R bloggers should add themselves- <a href="http://www.r-bloggers.com/lang/add-your-blog">here</a>)</div>
+		</div><div class="side-widget"><h2><a class="rsswidget" href="http://feeds.feedburner.com/Rjobs"><img style="border:0" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/rss.png" alt="RSS" height="14" width="14"></a> <a class="rsswidget" href="http://www.r-users.com/">Jobs for R-users</a></h2><ul><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/RJobs/%7E3/dVv9uSH4iwM/">Quantitative Developer/Data Scientist (@ Mountain View)</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/RJobs/%7E3/Q3rArpsWIMg/">Data Scientist  AWF</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/RJobs/%7E3/xYywO34ndjU/">Network Link analysis Consultant (@ London)</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/RJobs/%7E3/LT6L1l3UU_o/">Seeking R Programmers for long term contract role</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/RJobs/%7E3/7VRWr6q1eSo/">Senior Data Scientist (for booking.com @ Amsterdam)</a></li></ul></div><div class="side-widget"><form method="get" id="searchform" action="http://www.r-bloggers.com/">
+<div>
+<input class="search_input" value="Search &amp; Hit Enter" name="s" id="s" onfocus="if (this.value == 'Search &amp; Hit Enter') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search &amp; Hit Enter';}" type="text">
+<input id="searchsubmit" type="hidden">
+</div>
+</form></div><div class="side-widget"><h2>Popular Searches</h2>
+<ul>
+<li><a href="http://www.r-bloggers.com/search/heatmap">heatmap</a></li>
+<li><a href="http://www.r-bloggers.com/search/web%20scraping">web scraping</a></li>
+<li><a href="http://www.r-bloggers.com/search/maps">maps</a></li>
+<li><a href="http://www.r-bloggers.com/search/undefined">undefined</a></li>
+<li><a href="http://www.r-bloggers.com/search/hadoop">hadoop</a></li>
+<li><a href="http://www.r-bloggers.com/search/shiny">shiny</a></li>
+<li><a href="http://www.r-bloggers.com/search/twitteR">twitteR</a></li>
+<li><a href="http://www.r-bloggers.com/search/boxplot">boxplot</a></li>
+<li><a href="http://www.r-bloggers.com/search/animation">animation</a></li>
+<li><a href="http://www.r-bloggers.com/search/ggplot2">ggplot2</a></li>
+<li><a href="http://www.r-bloggers.com/search/trading">trading</a></li>
+<li><a href="http://www.r-bloggers.com/search/finance">finance</a></li>
+<li><a href="http://www.r-bloggers.com/search/time%20series">time series</a></li>
+<li><a href="http://www.r-bloggers.com/search/LaTeX">LaTeX</a></li>
+<li><a href="http://www.r-bloggers.com/search/excel">excel</a></li>
+<li><a href="http://www.r-bloggers.com/search/ggplot">ggplot</a></li>
+<li><a href="http://www.r-bloggers.com/search/PCA">PCA</a></li>
+<li><a href="http://www.r-bloggers.com/search/quantmod">quantmod</a></li>
+<li><a href="http://www.r-bloggers.com/search/eclipse">eclipse</a></li>
+<li><a href="http://www.r-bloggers.com/search/googlevis">googlevis</a></li>
+<li><a href="http://www.r-bloggers.com/search/market%20research">market research</a></li>
+<li><a href="http://www.r-bloggers.com/search/Rstudio">Rstudio</a></li>
+<li><a href="http://www.r-bloggers.com/search/how%20to%20import%20image%20file%20to%20R">how to import image file to R</a></li>
+<li><a href="http://www.r-bloggers.com/search/tutorial">tutorial</a></li>
+<li><a href="http://www.r-bloggers.com/search/Knitr">Knitr</a></li>
+<li><a href="http://www.r-bloggers.com/search/rattle">rattle</a></li>
+<li><a href="http://www.r-bloggers.com/search/coplot">coplot</a></li>
+<li><a href="http://www.r-bloggers.com/search/rcmdr">rcmdr</a></li>
+<li><a href="http://www.r-bloggers.com/search/GIS">GIS</a></li>
+<li><a href="http://www.r-bloggers.com/search/sweave">sweave</a></li>
+</ul>
+
+</div>		<div class="side-widget">		<h2>Recent Posts</h2>		<ul>
+					<li>
+				<a href="http://www.r-bloggers.com/hey-fitbit-my-data-belong-to-me/">Hey Fitbit, my data belong to me!</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/delayed-in-seattle/">delayed in Seattle</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/drat-0-1-0-even-more-repository-support/">drat 0.1.0: Even more repository support</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/soap-analytics-text-mining-goede-tijden-slechte-tijden-plot-summaries/">Soap analytics: Text mining “Goede tijden slechte tijden” plot summaries….</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/a-decade-of-premier-league-football/">A Decade of Premier League Football</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/argentine-general-election-2015/">Argentine general election, 2015</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/new-r-talk-podcast-with-news-from-r-consortium/">New ‘R Talk’ podcast with news from R Consortium</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/the-new-and-improved-r-shodan-package/">The New and Improved R Shodan&nbsp;Package</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/adding-a-cran-search-engine-to-chrome/">Adding a CRAN Search Engine to Chrome</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/call-for-papers-at-the-budapest-bi-and-open-analytics-forum/">Call for Papers at the Budapest BI and Open Analytics Forum</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/parsing-bed-coordinates/">parsing BED coordinates</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/matrix-factorization-comes-in-many-flavors-components-clusters-building-blocks-and-ideals/">Matrix Factorization Comes in Many Flavors: Components, Clusters, Building Blocks and Ideals</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/authenticated-api-testing-using-travis-ci/">Authenticated API Testing Using Travis CI</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/compiling-rmarkdown-from-a-helper-r-script/">Compiling RMarkdown from a Helper R Script</a>
+						</li>
+					<li>
+				<a href="http://www.r-bloggers.com/a-simple-statnet-model-of-cran/">A simple statnet model of CRAN</a>
+						</li>
+				</ul>
+		</div><div class="side-widget"><h2>Other sites</h2>
+	<ul class="xoxo blogroll">
+<li><a href="http://www.proc-x.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.proc-x.com/', 'SAS blogs']);" rel="nofollow" title="SAS news gathered from bloggers">SAS blogs</a></li>
+<li><a href="http://statil.org/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://statil.org/', 'Statistics of Israel']);" rel="nofollow" title="25,000 data sets of time series from the Israeli Central Bureau of Statistics ">Statistics of Israel</a></li>
+<li><a href="http://www.r-users.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.r-users.com/', 'Jobs for R-users']);" rel="nofollow">Jobs for R-users</a></li>
+
+	</ul>
+</div>
+    </div>
+<!-- end sidebar -->	<div id="leftcontent">
+	
+		
+
+	<div id="post-73914" class="post-73914 post type-post status-publish format-standard hentry category-r-bloggers">
+					
+				
+                <h1>Date Formats in R</h1>
+                <div class="meta"><div class="date">August 22, 2013</div>By <a href="http://www.r-bloggers.com/author/mollie/" title="Posts by Mollie" rel="author">Mollie</a></div><div class="entry"><p class="syndicated-attribution"></p><div class="social4i" style="height:29px;"><div class="social4in" style="height:29px;float: left;"><div class="socialicons s4fblike" style="float:left;margin-right: 10px;"><div fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;height=21&amp;href=http%3A%2F%2Fwww.r-bloggers.com%2Fdate-formats-in-r%2F&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;send=true&amp;show_faces=false&amp;width=100" fb-xfbml-state="rendered" class="fb-like fb_iframe_widget" data-href="http://www.r-bloggers.com/date-formats-in-r/" data-send="true" data-layout="button_count" data-width="100" data-height="21" data-show-faces="false"><span style="vertical-align: bottom; width: 120px; height: 20px;"><iframe class="" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/like.html" style="border: medium none; visibility: visible; width: 120px; height: 20px;" title="fb:like Facebook Social Plugin" scrolling="no" allowfullscreen="true" allowtransparency="true" name="f321eabe898d0c" frameborder="0" height="21px" width="100px"></iframe></span></div></div><div class="socialicons s4twitter" style="float:left;margin-right: 10px;"><iframe style="position: static; visibility: visible; width: 77px; height: 20px;" data-twttr-rendered="true" title="Twitter Tweet Button" class="twitter-share-button twitter-tweet-button twitter-share-button twitter-count-horizontal" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/tweet_button.html" allowtransparency="true" scrolling="no" id="twitter-widget-0" frameborder="0"></iframe></div></div><div style="clear:both"></div></div>
+
+<div style="border: 1px solid; background: none repeat scroll 0 0 #EDEDED; margin: 1px; font-size: 12px;">
+(This article was first published on  <strong><a href="http://www.mollietaylor.com/2013/08/date-formats-in-r.html"> Mollie's Research Blog</a></strong>, and kindly contributed to <a href="http://www.r-bloggers.com/" rel="nofollow">R-bloggers)</a>      
+</div><p></p>
+<h3>Importing Dates</h3>
+<div>Dates can be imported from character, numeric, POSIXlt, and POSIXct formats using the <i>as.Date</i>&nbsp;function from the <b>base</b>&nbsp;package.<p></p>
+<p>If your data were exported from Excel, they will possibly be in 
+numeric format. Otherwise, they will most likely be stored in character 
+format.</p>
+<h4>Importing Dates from Character Format</h4>
+<div>If your dates are stored as characters, you simply need to provide <i>as.Date</i>&nbsp;with
+ your vector of dates and the format they are currently stored in. The 
+possible date segment formats are listed in a table below.&nbsp;</div>
+<div></div>
+<div>For example,</div>
+<div>“05/27/84″ is in the format %m/%d/%y, while “May 27 1984″ is in the format %B %d %Y.</div>
+<div></div>
+<div>To import those dates, you would simply provide your dates and 
+their format (if not specified, it tries %Y-%m-%d and then %Y/%m/%d):</div>
+<div><!-- HTML generated using hilite.me -->
+<div style="background: #f0f3f3; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;"></pre>
+<pre style="line-height: 125%; margin: 0;">dates <span style="color: #555555;">&lt;-</span> c(<span style="color: #cc3300;">"05/27/84"</span>, <span style="color: #cc3300;">"07/07/05"</span>)<br>betterDates <span style="color: #555555;">&lt;-</span> as.Date(dates,<br>  format <span style="color: #555555;">=</span> <span style="color: #cc3300;">"%m/%d/%y"</span>)</pre>
+<pre style="line-height: 125%; margin: 0;"><span style="color: #555555;">&gt;</span> betterDates<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span> <span style="color: #cc3300;">"2005-07-07"</span><br></pre>
+</div>
+<p></p></div>
+<div>Or:</div>
+<p><!-- HTML generated using hilite.me -->
+</p><div style="background: #f0f3f3; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">dates <span style="color: #555555;">&lt;-</span> c(<span style="color: #cc3300;">"May 27 1984"</span>, <span style="color: #cc3300;">"July 7 2005"</span>)<br>betterDates <span style="color: #555555;">&lt;-</span> as.Date(dates,<br>  format <span style="color: #555555;">=</span> <span style="color: #cc3300;">"%B %d %Y"</span>)<br><br><span style="color: #555555;">&gt;</span> betterDates<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span> <span style="color: #cc3300;">"2005-07-07"</span><br></pre>
+</div>
+<div><br class="Apple-interchange-newline">This outputs the dates in the ISO 8601 international standard format %Y-%m-%d. If you would like to use dates in a different format, read “Changing Date Formats” below.<br>
+<h4>Importing Dates from Numeric Format</h4>
+<div>If you are importing data from Excel, you may have dates that are in a numeric format. We can still use <i>as.Date</i>&nbsp;to import these, we simply need to know the origin date that Excel starts counting from, and provide that to <i>as.Date</i>.</div>
+<div></div>
+<div>For Excel on Windows, the origin date is December 30, 1899 for dates after 1900. (Excel’s designer thought 1900 was a leap year, but it was not.) For Excel on Mac, the origin date is January 1, 1904.</div>
+</div>
+<p><!-- HTML generated using hilite.me -->
+</p><div style="background: #f0f3f3; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;"><span style="color: #0099ff; font-style: italic;"># from Windows Excel:</span><br>  dates <span style="color: #555555;">&lt;-</span> c(<span style="color: #ff6600;">30829</span>, <span style="color: #ff6600;">38540</span>)<br>  betterDates <span style="color: #555555;">&lt;-</span> as.Date(dates,<br>    origin <span style="color: #555555;">=</span> <span style="color: #cc3300;">"1899-12-30"</span>)<br><br><span style="color: #555555;">&gt;</span>   betterDates<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span> <span style="color: #cc3300;">"2005-07-07"</span><br><br><span style="color: #0099ff; font-style: italic;"># from Mac Excel:</span><br>  dates <span style="color: #555555;">&lt;-</span> c(<span style="color: #ff6600;">29367</span>, <span style="color: #ff6600;">37078</span>)<br>  betterDates <span style="color: #555555;">&lt;-</span> as.Date(dates,<br>    origin <span style="color: #555555;">=</span> <span style="color: #cc3300;">"1904-01-01"</span>)<br><br><span style="color: #555555;">&gt;</span>   betterDates<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span> <span style="color: #cc3300;">"2005-07-07"</span><br></pre>
+</div>
+<div>This outputs the dates in the ISO 8601 international standard format %Y-%m-%d. If you would like to use dates in a different format, read the next step:</div>
+</div>
+<ul>
+<ul></ul>
+</ul>
+<h3>Changing Date Formats</h3>
+<div>If you would like to use dates in a format other than the standard %Y-%m-%d, you can do that using the <i>format</i>&nbsp;function from the <b>base</b>&nbsp;package.<p></p>
+<p>For example,<br><!-- HTML generated using hilite.me -->
+</p><div style="background: #f0f3f3; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">format(betterDates,<br>  <span style="color: #cc3300;">"%a %b %d"</span>)<br><br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"Sun May 27"</span> <span style="color: #cc3300;">"Thu Jul 07"</span><br></pre>
+</div>
+<p></p></div>
+<h3>Correct Centuries</h3>
+<div>If you are importing data with only two digits for the years, you will find that it assumes that years 69 to 99 are 1969-1999, while years 00 to 68 are 2000–2068 (subject to change in future versions of R).</div>
+<div></div>
+<div>Often, this is not what you intend to have happen. <a href="http://stackoverflow.com/questions/9508747/r-adding-century-to-year" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://stackoverflow.com/questions/9508747/r-adding-century-to-year', 'This page']);" ref="nofollow" target="_blank">This page</a> gives a good explanation of several ways to fix this depending on your preference of centuries. One solution it provides is to assume all dates R is placing in the future are really from the previous century. That solution is as follows:</div>
+<div><!-- HTML generated using hilite.me -->
+<div style="background: #f0f3f3; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;">dates <span style="color: #555555;">&lt;-</span> c(<span style="color: #cc3300;">"05/27/84"</span>, <span style="color: #cc3300;">"07/07/05"</span>, <span style="color: #cc3300;">"08/17/20"</span>)<br>betterDates <span style="color: #555555;">&lt;-</span> as.Date(dates, <span style="color: #cc3300;">"%m/%d/%y"</span>)<br><br><span style="color: #555555;">&gt;</span> betterDates<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span> <span style="color: #cc3300;">"2005-07-07"</span> <span style="color: #cc3300;">"2020-08-17"</span><br><br>correctCentury <span style="color: #555555;">&lt;-</span> as.Date(ifelse(betterDates <span style="color: #555555;">&gt;</span> Sys.Date(), <br>  format(betterDates, <span style="color: #cc3300;">"19%y-%m-%d"</span>), <br>  format(betterDates)))<br><br><span style="color: #555555;">&gt;</span> correctCentury<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span> <span style="color: #cc3300;">"2005-07-07"</span> <span style="color: #cc3300;">"1920-08-17"</span><br></pre>
+</div>
+<p></p></div>
+<div>
+<h3>Purpose of Proper Formatting</h3>
+<p>Having your dates in the proper format allows R to know that they are dates, and as such knows what calculations it should and should not perform on them. For one example, see my <a href="http://www.mollietaylor.com/2013/08/plot-weekly-or-monthly-totals-in-r.html" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://www.mollietaylor.com/2013/08/plot-weekly-or-monthly-totals-in-r.html', 'post on plotting weekly or monthly totals']);" ref="nofollow" target="_blank">post on plotting weekly or monthly totals</a>. Here are a few more examples:<br><!-- HTML generated using hilite.me -->
+</p><div style="background: #f0f3f3; border-width: .1em .1em .1em .8em; border: solid gray; overflow: auto; padding: .2em .6em; width: auto;">
+<pre style="line-height: 125%; margin: 0;"><span style="color: #555555;">&gt;</span>   mean(betterDates)<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1994-12-16"</span><br><br><span style="color: #555555;">&gt;</span>   max(betterDates)<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"2005-07-07"</span><br><br><span style="color: #555555;">&gt;</span>   min(betterDates)<br>[<span style="color: #ff6600;">1</span>] <span style="color: #cc3300;">"1984-05-27"</span><br></pre>
+</div>
+<p></p></div>
+<p>The code is available in a <a href="https://gist.github.com/mollietaylor/6258459" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://gist.github.com/mollietaylor/6258459', 'gist']);" ref="nofollow" target="_blank">gist</a>.<br>
+</p><h3>Date Formats</h3>
+<table style="width: 100%px;">
+<tbody>
+<tr>
+<td>Conversion specification</td>
+<td>Description</td>
+<td>Example</td>
+</tr>
+<tr>
+<td>%a</td>
+<td>Abbreviated weekday</td>
+<td>Sun, Thu</td>
+</tr>
+<tr>
+<td>%A</td>
+<td>Full weekday</td>
+<td>Sunday, Thursday</td>
+</tr>
+<tr>
+<td>%b or %h</td>
+<td>Abbreviated month</td>
+<td>May, Jul</td>
+</tr>
+<tr>
+<td>%B</td>
+<td>Full month</td>
+<td>May, July</td>
+</tr>
+<tr>
+<td>%d</td>
+<td>Day of the month<br>01-31</td>
+<td>27, 07</td>
+</tr>
+<tr>
+<td>%j</td>
+<td>Day of the year<br>001-366</td>
+<td>148, 188</td>
+</tr>
+<tr>
+<td>%m</td>
+<td>Month<br>01-12</td>
+<td>05, 07</td>
+</tr>
+<tr>
+<td>%U</td>
+<td>Week<br>01-53<br>with Sunday as first day of the week</td>
+<td>22, 27</td>
+</tr>
+<tr>
+<td>%w</td>
+<td>Weekday<br>0-6<br>Sunday is 0</td>
+<td>0, 4</td>
+</tr>
+<tr>
+<td>%W</td>
+<td>Week<br>00-53<br>with Monday as first day of the week</td>
+<td>21, 27</td>
+</tr>
+<tr>
+<td>%x</td>
+<td>Date, locale-specific</td>
+<td></td>
+</tr>
+<tr>
+<td>%y</td>
+<td>Year without century<br>00-99</td>
+<td>84, 05</td>
+</tr>
+<tr>
+<td>%Y</td>
+<td>Year with century<br>on input:<br>00 to 68 prefixed by 20<br>69 to 99 prefixed by 19</td>
+<td>1984, 2005</td>
+</tr>
+<tr>
+<td>%C</td>
+<td>Century</td>
+<td>19, 20</td>
+</tr>
+<tr>
+<td>%D</td>
+<td>Date formatted %m/%d/%y</td>
+<td>05/27/84, 07/07/05</td>
+</tr>
+<tr>
+<td>%u</td>
+<td>Weekday<br>1-7<br>Monday is 1</td>
+<td>7, 4</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>%n</td>
+<td>Newline on output or<br>Arbitrary whitespace on input</td>
+<td></td>
+</tr>
+<tr>
+<td>%t</td>
+<td>Tab on output or<br>Arbitrary whitespace on input</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>References</h3>
+<div>
+<ul>
+<li>help(as.Date)</li>
+<li>help(strptime)</li>
+<li><a href="http://stackoverflow.com/questions/9508747/r-adding-century-to-year" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://stackoverflow.com/questions/9508747/r-adding-century-to-year', 'http://stackoverflow.com/questions/9508747/r-adding-century-to-year']);" ref="nofollow" target="_blank">http://stackoverflow.com/questions/9508747/r-adding-century-to-year</a></li>
+</ul>
+</div>
+<p></p>
+
+<div style="display: block;" id="jp-relatedposts" class="jp-relatedposts">
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+<div class="jp-relatedposts-items jp-relatedposts-items-visual"><div class="jp-relatedposts-post jp-relatedposts-post0 jp-relatedposts-post-nothumbs" data-post-id="76641" data-post-format="false"><a data-position="0" data-origin="73914" rel="nofollow" title="Date formating in R
+
+As I often manipulate time series from different sources, I rarely come across the same date format twice. Having to reformat the dates every time is a real waste of time because I never remember the syntax of the as.Date function. I put below a few examples that turn strings…" href="http://www.r-bloggers.com/date-formating-in-r/" class="jp-relatedposts-post-a jp-relatedposts-post-aoverlay"></a><h4 class="jp-relatedposts-post-title"><a data-position="0" data-origin="73914" rel="nofollow" title="Date formating in R
+
+As I often manipulate time series from different sources, I rarely come across the same date format twice. Having to reformat the dates every time is a real waste of time because I never remember the syntax of the as.Date function. I put below a few examples that turn strings…" href="http://www.r-bloggers.com/date-formating-in-r/" class="jp-relatedposts-post-a">Date formating in R</a></h4><p style="max-height: 7.14286em;" class="jp-relatedposts-post-excerpt">As I often manipulate time series from different sources, I rarely come across the same date format twice. Having to reformat the dates every time is a real waste of time because I never remember the syntax of the as.Date function. I put below a few examples that turn strings…</p><p class="jp-relatedposts-post-date">April 18, 2014</p><p class="jp-relatedposts-post-context">In "R bloggers"</p></div><div class="jp-relatedposts-post jp-relatedposts-post1 jp-relatedposts-post-thumbs" data-post-id="75420" data-post-format="false"><a data-position="1" data-origin="73914" rel="nofollow" title="Using Dates and Times in R
+
+Today at the Davis R Users’ Group, Bonnie Dixon gave a tutorial on the various ways to handle dates and times in R. Bonnie provided this great script which walks through essential classes, functions, and packages. Here it is piped through knitr::spin. The original R script can be found as…" href="http://www.r-bloggers.com/using-dates-and-times-in-r/" class="jp-relatedposts-post-a"><img class="jp-relatedposts-post-img" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/dixondates.png" alt="Using Dates and Times in R" width="350"></a><h4 class="jp-relatedposts-post-title"><a data-position="1" data-origin="73914" rel="nofollow" title="Using Dates and Times in R
+
+Today at the Davis R Users’ Group, Bonnie Dixon gave a tutorial on the various ways to handle dates and times in R. Bonnie provided this great script which walks through essential classes, functions, and packages. Here it is piped through knitr::spin. The original R script can be found as…" href="http://www.r-bloggers.com/using-dates-and-times-in-r/" class="jp-relatedposts-post-a">Using Dates and Times in R</a></h4><p class="jp-relatedposts-post-excerpt">Today at the Davis R Users’ Group, Bonnie Dixon gave a tutorial on the various ways to handle dates and times in R. Bonnie provided this great script which walks through essential classes, functions, and packages. Here it is piped through knitr::spin. The original R script can be found as…</p><p class="jp-relatedposts-post-date">February 10, 2014</p><p class="jp-relatedposts-post-context">In "R bloggers"</p></div><div class="jp-relatedposts-post jp-relatedposts-post2 jp-relatedposts-post-thumbs" data-post-id="76187" data-post-format="false"><a data-position="2" data-origin="73914" rel="nofollow" title="Types of Data on R
+
+There are different types of data on R. I use type&nbsp;here as a technical term, rather than merely a synonym of “variety”.&nbsp; There are three main types of data: Numeric: ordinary numbers Character: not treated as a number, but as a word. You cannot add two characters, even if they…" href="http://www.r-bloggers.com/types-of-data-on-r/" class="jp-relatedposts-post-a"><img class="jp-relatedposts-post-img" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/capture.jpg" alt="Types of Data on R" width="350"></a><h4 class="jp-relatedposts-post-title"><a data-position="2" data-origin="73914" rel="nofollow" title="Types of Data on R
+
+There are different types of data on R. I use type&nbsp;here as a technical term, rather than merely a synonym of “variety”.&nbsp; There are three main types of data: Numeric: ordinary numbers Character: not treated as a number, but as a word. You cannot add two characters, even if they…" href="http://www.r-bloggers.com/types-of-data-on-r/" class="jp-relatedposts-post-a">Types of Data on R</a></h4><p class="jp-relatedposts-post-excerpt">There are different types of data on R. I use type&nbsp;here as a technical term, rather than merely a synonym of “variety”.&nbsp; There are three main types of data: Numeric: ordinary numbers Character: not treated as a number, but as a word. You cannot add two characters, even if they…</p><p class="jp-relatedposts-post-date">August 26, 2013</p><p class="jp-relatedposts-post-context">In "R bloggers"</p></div></div></div>
+<p class="syndicated-attribution"></p><div class="social4i" style="height:82px;"><div class="social4in" style="height:82px;float: right;"><div class="socialicons s4fblike" style="float:left;margin-right: 10px;"><div fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;height=62&amp;href=http%3A%2F%2Fwww.r-bloggers.com%2Fdate-formats-in-r%2F&amp;layout=box_count&amp;locale=en_US&amp;sdk=joey&amp;send=true&amp;show_faces=false&amp;width=55" fb-xfbml-state="rendered" class="fb-like fb_iframe_widget" data-href="http://www.r-bloggers.com/date-formats-in-r/" data-send="true" data-layout="box_count" data-width="55" data-height="62" data-show-faces="false"><span style="vertical-align: bottom; width: 47px; height: 86px;"><iframe class="" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/like_002.html" style="border: medium none; visibility: visible; width: 47px; height: 86px;" title="fb:like Facebook Social Plugin" scrolling="no" allowfullscreen="true" allowtransparency="true" name="f320975a790af1a" frameborder="0" height="62px" width="55px"></iframe></span></div></div><div class="socialicons s4twitter" style="float:left;margin-right: 10px;"><iframe style="position: static; visibility: visible; width: 55px; height: 61px;" data-twttr-rendered="true" title="Twitter Tweet Button" class="twitter-share-button twitter-tweet-button twitter-share-button twitter-count-vertical" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/tweet_button_002.html" allowtransparency="true" scrolling="no" id="twitter-widget-1" frameborder="0"></iframe></div></div><div style="clear:both"></div></div>
+
+<div style="border: 1px solid; background: none repeat scroll 0 0 #EDEDED; margin: 1px; font-size: 13px;">
+<div style="text-align: center;">To <strong>leave a comment</strong> for the author, please follow the link and comment on his blog: <strong><a href="http://www.mollietaylor.com/2013/08/date-formats-in-r.html"> Mollie's Research Blog</a></strong>.</div>
+<hr>
+<a href="http://www.r-bloggers.com/" rel="nofollow">R-bloggers.com</a> offers <strong><a href="http://feedburner.google.com/fb/a/mailverify?uri=RBloggers" rel="nofollow">daily e-mail updates</a></strong> about <a title="The R Project for Statistical Computing" href="http://www.r-project.org/" rel="nofollow">R</a> news and <a title="R tutorials" href="http://www.r-bloggers.com/?s=tutorial" rel="nofollow">tutorials</a> on topics such as: visualization (<a title="ggplot and ggplot2 tutorials" href="http://www.r-bloggers.com/?s=ggplot2" rel="nofollow">ggplot2</a>, <a title="Boxplots using lattice and ggplot2 tutorials" href="http://www.r-bloggers.com/?s=boxplot" rel="nofollow">Boxplots</a>, <a title="Maps and gis" href="http://www.r-bloggers.com/?s=map" rel="nofollow">maps</a>, <a title="Animation in R" href="http://www.r-bloggers.com/?s=animation" rel="nofollow">animation</a>), programming (<a title="RStudio IDE for R" href="http://www.r-bloggers.com/?s=RStudio" rel="nofollow">RStudio</a>, <a title="Sweave and literate programming" href="http://www.r-bloggers.com/?s=sweave" rel="nofollow">Sweave</a>, <a title="LaTeX in R" href="http://www.r-bloggers.com/?s=LaTeX" rel="nofollow">LaTeX</a>, <a title="SQL and databases" href="http://www.r-bloggers.com/?s=SQL" rel="nofollow">SQL</a>, <a title="Eclipse IDE for R" href="http://www.r-bloggers.com/?s=eclipse" rel="nofollow">Eclipse</a>, <a title="git and github, Version Control System" href="http://www.r-bloggers.com/?s=git" rel="nofollow">git</a>, <a title="Large data in R using Hadoop" href="http://www.r-bloggers.com/?s=hadoop" rel="nofollow">hadoop</a>, <a title="Web Scraping of google, facebook, yahoo, twitter and more using R" href="http://www.r-bloggers.com/?s=Web+Scraping" rel="nofollow">Web Scraping</a>) statistics (<a title="Regressions and ANOVA analysis tutorials" href="http://www.r-bloggers.com/?s=regression" rel="nofollow">regression</a>, <a title="principal component analysis tutorial" href="http://www.r-bloggers.com/?s=PCA" rel="nofollow">PCA</a>, <a title="Time series" href="http://www.r-bloggers.com/?s=time+series" rel="nofollow">time series</a>, <a title="finance trading" href="http://www.r-bloggers.com/?s=trading" rel="nofollow">trading</a>) and more...
+</div><p></p><hr><hr>
+<div style="border: 1px solid #EB9349; background: none repeat scroll 0 0 #FDEADA; text-align: center; margin: 10px; font-size: 16px;">
+If you got this far, why not <strong><u>subscribe for updates</u> </strong>from the site?  Choose your flavor: <a href="http://feedburner.google.com/fb/a/mailverify?uri=RBloggers" rel="nofollow">e-mail</a>, <a href="https://twitter.com/#%21/rbloggers" rel="nofollow">twitter</a>, <a href="http://feeds.feedburner.com/RBloggers" rel="nofollow">RSS</a>, or <a href="http://www.facebook.com/pages/R-bloggers/191414254890" rel="nofollow">facebook</a>...
+</div><div class="social4i" style="height:29px;"><div class="social4in" style="height:29px;float: left;"><div class="socialicons s4fblike" style="float:left;margin-right: 10px;"><div fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;height=21&amp;href=http%3A%2F%2Fwww.r-bloggers.com%2Fdate-formats-in-r%2F&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;send=true&amp;show_faces=false&amp;width=100" fb-xfbml-state="rendered" class="fb-like fb_iframe_widget" data-href="http://www.r-bloggers.com/date-formats-in-r/" data-send="true" data-layout="button_count" data-width="100" data-height="21" data-show-faces="false"><span style="vertical-align: bottom; width: 120px; height: 20px;"><iframe class="" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/like_003.html" style="border: medium none; visibility: visible; width: 120px; height: 20px;" title="fb:like Facebook Social Plugin" scrolling="no" allowfullscreen="true" allowtransparency="true" name="f2acba48502040e" frameborder="0" height="21px" width="100px"></iframe></span></div></div><div class="socialicons s4twitter" style="float:left;margin-right: 10px;"><iframe style="position: static; visibility: visible; width: 77px; height: 20px;" data-twttr-rendered="true" title="Twitter Tweet Button" class="twitter-share-button twitter-tweet-button twitter-share-button twitter-count-horizontal" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/tweet_button_003.html" allowtransparency="true" scrolling="no" id="twitter-widget-2" frameborder="0"></iframe></div></div><div style="clear:both"></div></div></div>
+
+	</div><!-- #post-## -->
+
+
+
+   				<div id="comments">
+
+
+<div id="comment-user-details">
+
+
+
+
+
+		<p class="nocomments">Comments are closed.</p>
+
+
+
+</div>
+
+</div><!-- #comments -->
+
+       
+	</div>
+    <!-- begin second sidebar -->
+    <div id="secondsidebar">
+
+		
+		<div class="side-widget"><h2>Top 3 Posts from the past 2 days</h2><ul>				<li>
+										<a href="http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/" class="bump-view" data-bump-view="tp">
+						In-depth introduction to machine learning in 15 hours of expert videos					</a>
+									</li>
+							<li>
+										<a href="http://www.r-bloggers.com/installing-r-packages/" class="bump-view" data-bump-view="tp">
+						Installing R packages					</a>
+									</li>
+							<li>
+										<a href="http://www.r-bloggers.com/the-new-and-improved-r-shodan-package/" class="bump-view" data-bump-view="tp">
+						The New and Improved R Shodan&nbsp;Package					</a>
+									</li>
+			</ul></div><div class="side-widget"><form method="get" id="searchform" action="http://www.r-bloggers.com/">
+<div>
+<input class="search_input" value="Search &amp; Hit Enter" name="s" id="s" onfocus="if (this.value == 'Search &amp; Hit Enter') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search &amp; Hit Enter';}" type="text">
+<input id="searchsubmit" type="hidden">
+</div>
+</form></div><div class="side-widget"><h2>Top 9 articles of the week</h2>
+<ol class="wppp_list">
+	<li><a href="http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/" title="In-depth introduction to machine learning in 15 hours of expert videos">In-depth introduction to machine learning in 15 hours of expert videos</a></li>
+	<li><a href="http://www.r-bloggers.com/microsoft-launches-its-first-free-online-r-course-on-edx/" title="Microsoft Launches Its First Free Online R Course on edX">Microsoft Launches Its First Free Online R Course on edX</a></li>
+	<li><a href="http://www.r-bloggers.com/installing-r-packages/" title="Installing R packages">Installing R packages</a></li>
+	<li><a href="http://www.r-bloggers.com/generalised-linear-models-in-r/" title="Generalised Linear Models in R">Generalised Linear Models in R</a></li>
+	<li><a href="http://www.r-bloggers.com/using-apply-sapply-lapply-in-r/" title="Using apply, sapply, lapply in R">Using apply, sapply, lapply in R</a></li>
+	<li><a href="http://www.r-bloggers.com/new-package-dplyrr-utilities-for-comfortable-use-of-dplyr-with-databases/" title="New package &quot;dplyrr&quot; - Utilities for comfortable use of dplyr with databases">New package "dplyrr" - Utilities for comfortable use of dplyr with databases</a></li>
+	<li><a href="http://www.r-bloggers.com/interview-with-a-data-scientist-hadley-wickham/" title="Interview with a Data Scientist (Hadley Wickham)">Interview with a Data Scientist (Hadley Wickham)</a></li>
+	<li><a href="http://www.r-bloggers.com/basics-of-histograms/" title="Basics of Histograms">Basics of Histograms</a></li>
+	<li><a href="http://www.r-bloggers.com/achieve-charting-zen-with-taucharts/" title="Achieve Charting Zen With TauCharts">Achieve Charting Zen With TauCharts</a></li>
+</ol>
+</div><div class="side-widget"><h2>Sponsors</h2>			<div class="textwidget"><a href="http://www.earl-conference.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.earl-conference.com/', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/Earl-2015-mango-solutions-rbloggers.png" alt="Mango solutions">
+</a>
+
+<br><hr>
+
+<a href="http://www.highstat.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.highstat.com/', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/highland_stat_banner_300_1251.jpg" alt="Zero Inflated Models and Generalized Linear Mixed Models with R">
+</a>
+
+
+<br><hr>
+
+<a href="http://www.quantide.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.quantide.com/', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/quantide4rbloggers.png" alt="Quantide: statistical consulting and training">
+</a>
+
+
+<br><hr>
+
+<a href="http://www.rstudio.org/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.rstudio.org/', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/R-Bloggernoanima.png" alt="RStudio homepage">
+</a>
+
+<br><hr>
+
+<a href="http://www.revolutionanalytics.com/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.revolutionanalytics.com/', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/Revolution-Analytics-Ad.png" alt="REvolution analytics">
+</a>
+
+
+
+
+<br><hr>
+
+<a href="http://www.eoda.de/de/r-akademie.html" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.eoda.de/de/r-akademie.html', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/R-Bloggers-Logo-ohne-Rahmen.png" alt="http://www.eoda.de">
+</a>
+
+
+<br><hr>
+
+<a href="https://plot.ly/api/r/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'https://plot.ly/api/r/', '\n    \nPlotly: collaborative, publication-quality graphing.\n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/plotly_ad_r_bloggers.jpg" alt="" title="Plotly">
+Plotly: collaborative, publication-quality graphing.
+</a>
+
+<br><hr>
+
+
+
+<a href="http://www.statisticsviews.com/view/index.html?utm_source=RBlogger&amp;utm_medium=banner&amp;utm_term=StatViews&amp;utm_content=StatViewsAd&amp;utm_campaign=webbanner" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.statisticsviews.com/view/index.html?utm_source=RBlogger&amp;utm_medium=banner&amp;utm_term=StatViews&amp;utm_content=StatViewsAd&amp;utm_campaign=webbanner', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/SVbanner300x125.jpg">
+</a>
+
+<br><hr>
+<a href="http://bit.ly/nycbootcamp" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://bit.ly/nycbootcamp', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/rbloggers-1.png" alt="" title="">
+</a>
+
+<br><hr>
+<a href="http://www.datacamp.com/?utm_source=R-bloggers&amp;utm_medium=Add&amp;utm_content=The%20r-blogger%20add&amp;utm_campaign=R-bloggers-add" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.datacamp.com/?utm_source=R-bloggers&amp;utm_medium=Add&amp;utm_content=The%20r-blogger%20add&amp;utm_campaign=R-bloggers-add', '\n\n']);" rel="nofollow">
+<img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/DataCamp_banner_rbloggers.jpg">
+</a>
+
+<br><hr>
+<a href="http://bit.ly/odscrblog" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://bit.ly/odscrblog', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/R-bloggers-300x125.png" alt="ODSC" title="ODSC 2015">
+</a>
+
+
+<br><hr>
+<a href="http://www.crcpress.com/go/the-r-series" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.crcpress.com/go/the-r-series', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/R-series-banner-300-125.jpg" alt="CRC R books series" title="CRC R books series">
+</a>
+
+
+<br><hr>
+<a href="http://www.dotplot.com/data_analysis_signup/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.dotplot.com/data_analysis_signup/', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/dotplot_banner300x150_1a.png" alt="" title="dotplot">
+</a>
+
+
+<br><hr>
+<a href="http://www.statworx.de/r-statistik/" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.statworx.de/r-statistik/', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/STATWORX-R-Bloggers.png" alt="" title="STATWORX">
+</a>
+
+
+<br><hr>
+<a href="http://yottamine.com/try-yottamine-now" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://yottamine.com/try-yottamine-now', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/R-Blog_Speed.png" alt="" title="yottamine">
+</a>
+
+
+
+<br><hr>
+<a href="http://www.simplilearn.com/big-data-and-analytics/?utm_source=R-bloggers&amp;utm_medium=affiliate-cpm&amp;utm_campaign=NC-US-ONLIN-0229-16-010715-rbloggers" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.simplilearn.com/big-data-and-analytics/?utm_source=R-bloggers&amp;utm_medium=affiliate-cpm&amp;utm_campaign=NC-US-ONLIN-0229-16-010715-rbloggers', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/300X125_rbloggers.png" alt="" title="simplilearn.com">
+</a>
+
+
+<br><hr>
+<a href="http://bit.ly/BostonDataFest" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://bit.ly/BostonDataFest', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/BDF-Rbloggers-Banner-300x125-03.png" alt="Open Data Science Conference" title="opendatascicon.com">
+</a>
+
+
+
+<br><hr>
+<a href="http://www.6sigma.us/six-sigma-online-training.php/?r" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://www.6sigma.us/six-sigma-online-training.php/?r', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/sixsigma300x125-1.jpg" alt="" title="6 sigma">
+</a>
+
+
+
+
+<br><hr>
+<a href="http://requestinfo.datascience.berkeley.edu/index.html?s=rbloggersflatbanner&amp;utm_source=rbloggersflatbanner&amp;utm_medium=banner" onclick="_gaq.push(['_trackEvent', 'outbound-widget', 'http://requestinfo.datascience.berkeley.edu/index.html?s=rbloggersflatbanner&amp;utm_source=rbloggersflatbanner&amp;utm_medium=banner', '\n    \n']);" rel="nofollow">
+    <img src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/Berkeley_J2148-15-ADS_Banner-Resize_p1.jpg" alt="Berkeley" title="">
+</a>
+
+
+
+
+
+
+</div>
+		</div><div class="side-widget"><form method="get" id="searchform" action="http://www.r-bloggers.com/">
+<div>
+<input class="search_input" value="Search &amp; Hit Enter" name="s" id="s" onfocus="if (this.value == 'Search &amp; Hit Enter') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search &amp; Hit Enter';}" type="text">
+<input id="searchsubmit" type="hidden">
+</div>
+</form></div><div class="side-widget">			<div class="textwidget"><strong><a href="http://www.r-bloggers.com/blogs-list/">Full list of contributing R-bloggers</a></strong></div>
+		</div>    </div>
+<!-- end second sidebar --></div>
+<!-- begin footer -->
+<div id="footer">
+	<strong><a href="http://www.r-bloggers.com/">R-bloggers</a></strong> was founded by <a href="http://www.r-statistics.com/about/">Tal Galili</a>, with gratitude to the <a href="http://www.r-project.org/">R</a> community.  <br>
+    Is powered by <a href="http://www.wordpress.org/">WordPress</a> using a <a href="http://themes.bavotasan.com/" rel="nofollow">bavotasan.com</a> design.<br>
+    Copyright © 2015 <strong>R-bloggers</strong>. All Rights Reserved. <a href="http://www.r-bloggers.com/terms/">Terms and Conditions</a> for this website<br>
+</div>
+
+<!--
+TPC! Memory Usage (http://webjawns.com)
+Memory Usage: 64117664
+Memory Peak Usage: 64468184
+WP Memory Limit: 820M
+PHP Memory Limit: 512M
+Checkpoints: 11
+-->
+
+<!-- Powered by WPtouch: 3.7.9.1 --><script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shCore.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushAS3.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushBash.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushColdFusion.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushClojure.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushCpp.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushCSharp.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushCss.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushDelphi.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushDiff.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushErlang.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushFSharp.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushGroovy.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushJava.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushJavaFX.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushJScript.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushLatex.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushMatlabKey.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushObjC.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushPerl.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushPhp.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushPlain.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushPowerShell.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushPython.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushR.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushRuby.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushScala.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushSql.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushVb.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/shBrushXml.js"></script>
+<script type="text/javascript">
+	(function(){
+		var corecss = document.createElement('link');
+		var themecss = document.createElement('link');
+		var corecssurl = "http://www.r-bloggers.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter3/styles/shCore.css?ver=3.0.9b";
+		if ( corecss.setAttribute ) {
+				corecss.setAttribute( "rel", "stylesheet" );
+				corecss.setAttribute( "type", "text/css" );
+				corecss.setAttribute( "href", corecssurl );
+		} else {
+				corecss.rel = "stylesheet";
+				corecss.href = corecssurl;
+		}
+		document.getElementsByTagName("head")[0].insertBefore( corecss, document.getElementById("syntaxhighlighteranchor") );
+		var themecssurl = "http://www.r-bloggers.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter3/styles/shThemeDefault.css?ver=3.0.9b";
+		if ( themecss.setAttribute ) {
+				themecss.setAttribute( "rel", "stylesheet" );
+				themecss.setAttribute( "type", "text/css" );
+				themecss.setAttribute( "href", themecssurl );
+		} else {
+				themecss.rel = "stylesheet";
+				themecss.href = themecssurl;
+		}
+		//document.getElementById("syntaxhighlighteranchor").appendChild(themecss);
+		document.getElementsByTagName("head")[0].insertBefore( themecss, document.getElementById("syntaxhighlighteranchor") );
+	})();
+	SyntaxHighlighter.config.strings.expandSource = '+ expand source';
+	SyntaxHighlighter.config.strings.help = '?';
+	SyntaxHighlighter.config.strings.alert = 'SyntaxHighlighter\n\n';
+	SyntaxHighlighter.config.strings.noBrush = 'Can\'t find brush for: ';
+	SyntaxHighlighter.config.strings.brushNotHtmlScript = 'Brush wasn\'t configured for html-script option: ';
+	SyntaxHighlighter.defaults['pad-line-numbers'] = false;
+	SyntaxHighlighter.defaults['toolbar'] = false;
+	SyntaxHighlighter.all();
+</script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/comment-reply.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/effects_002.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/photon.js"></script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/devicepx-jetpack.js"></script>
+	<div class=" fb_reset" id="fb-root"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/BhKMRj1sUPu.html" style="border: medium none;" tabindex="-1" title="Facebook Cross Domain Communication Frame" aria-hidden="true" id="fb_xdm_frame_http" scrolling="no" allowfullscreen="true" allowtransparency="true" name="fb_xdm_frame_http" frameborder="0"></iframe><iframe src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/BhKMRj1sUPu_002.html" style="border: medium none;" tabindex="-1" title="Facebook Cross Domain Communication Frame" aria-hidden="true" id="fb_xdm_frame_https" scrolling="no" allowfullscreen="true" allowtransparency="true" name="fb_xdm_frame_https" frameborder="0"></iframe></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div></div>
+	<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/widgets.js"></script><script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/all.js"></script><script gapi_processed="true" type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/plusone.js"></script><script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/in.js"></script><script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/e-201532.js" async="" defer="defer"></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:3.6',blog:'11524731',post:'73914',tz:'-6',srv:'www.r-bloggers.com'} ]);
+	_stq.push([ 'clickTrackerInit', '11524731', '73914' ]);
+</script>
+<script type="text/javascript" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/effects.js"></script> 
+<script type="text/javascript">
+/* <![CDATA[ */
+jQuery(function(){
+	jQuery("ul.sf-menu").supersubs({ 
+		minWidth:    12,
+		maxWidth:    27,
+		extraWidth:  1
+	}).superfish({ 
+		delay:       100,
+		speed:       250 
+	});	});
+/* ]]> */
+</script>
+
+
+
+
+
+
+
+
+<img id="wpstats" src="Date%20Formats%20in%20R%20%7C%20R-bloggers_files/g.gif"></body></html>
+<!-- Dynamic page generated in 0.668 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-08-08 19:55:14 -->
+<!-- Compression = gzip -->
