@@ -1,0 +1,16 @@
+---
+title: "Problem2_set_R_Analysis"
+author: "Rakesh"
+date: "August 9, 2015"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+qplot(x = price, y = x, data=diamonds)
+```
+
+```{r}
+
+```
+

@@ -1,0 +1,34 @@
+---
+title: "Problem2_set_R_Analysis"
+author: "Rakesh"
+date: "August 9, 2015"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+qplot(x = price, y = x, data=diamonds)
+```
+
+```{r}
+cor(diamonds$price,diamonds$z)
+```
+
+```{r}
+
+# Change the code to make the transparency of the
+# points to be 1/100 of what they are now and mark
+# the x-axis every 2 units. See the instructor notes
+# for two hints.
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# ALTER THE CODE BELOW THIS LINE
+#============================================
+ggplot(data = diamonds, aes(x = depth, y = price)) + 
+  geom_point()
+
+```
+
+
