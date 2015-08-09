@@ -1,0 +1,13 @@
+---
+title: ""
+author: "Rakesh"
+date: "August 8, 2015"
+output: html_document
+---
+
+```{r}
+
+# if you are looking for solutions to problemset2 then search here
+https://rstudio-pubs-static.s3.amazonaws.com/52474_a1e8c48bd586418e836af7bfde1af5b0.html
+```
+
